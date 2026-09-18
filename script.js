@@ -727,6 +727,7 @@ function flagFor(country) {
 
 let difficulty = "easy";
 let secretPlayer = null;
+let gameStartTime = null;
 
 let attempts = 0;
 
@@ -929,6 +930,8 @@ function startDaily() {
 function setupGameScreen() {
 
     attempts = 0;
+
+    gameStartTime = Date.now();
 
     hintsUsed = 0;
     maxHints = hintsByDifficulty[difficulty] || 0;
@@ -1930,7 +1933,11 @@ function recordGame(won) {
     });
 
     if (won) {
-        recordLeaderboardEntry(attempts, difficulty);
+        const elapsedSeconds = gameStartTime
+            ? Math.round((Date.now() - gameStartTime) / 1000)
+            : null;
+
+        recordLeaderboardEntry(attempts, difficulty, elapsedSeconds);
     }
 
 }
@@ -2890,9 +2897,9 @@ const FOOTDLE_LANGUAGES = {
         mpHostChangingSettings: "⚙️ Host is changing the settings…",
 
         // LEADERBOARD
-        lbMenuButton: "🏆 Leaderboard",
-        lbTitle: "🏆 Leaderboard",
-        lbSubtitle: "Top wins by fewest guesses — everyone's scores",
+        lbMenuButton: "🏆 LEADERBOARD",
+        lbTitle: "🏆 LEADERBOARD",
+        lbSubtitle: "Each player's personal best — fewest guesses wins",
         lbAllTime: "All-Time",
         lbWeekly: "This Week",
         lbLoading: "Loading…",
@@ -2901,6 +2908,9 @@ const FOOTDLE_LANGUAGES = {
         lbGuessSingular: "guess",
         lbGuessPlural: "guesses",
         lbErrorLoad: "Couldn't load the leaderboard — check your connection.",
+        lbYouTag: "you",
+        lbYourRank: "Your rank",
+        lbRankBeyond: "You're ranked beyond what we can show here — keep climbing!",
 
         // DIFFICULTY SCREEN
         diffScreenTitle: "SELECT DIFFICULTY",
@@ -3086,9 +3096,9 @@ const FOOTDLE_LANGUAGES = {
         mpHostChangingSettings: "⚙️ L'hôte modifie les réglages…",
 
         // LEADERBOARD
-        lbMenuButton: "🏆 Classement",
-        lbTitle: "🏆 Classement",
-        lbSubtitle: "Meilleures victoires en moins d'essais — tous les scores",
+        lbMenuButton: "🏆 CLASSEMENT",
+        lbTitle: "🏆 CLASSEMENT",
+        lbSubtitle: "Le meilleur score de chaque joueur — moins d'essais gagne",
         lbAllTime: "Depuis toujours",
         lbWeekly: "Cette semaine",
         lbLoading: "Chargement…",
@@ -3097,6 +3107,9 @@ const FOOTDLE_LANGUAGES = {
         lbGuessSingular: "essai",
         lbGuessPlural: "essais",
         lbErrorLoad: "Impossible de charger le classement — vérifiez votre connexion.",
+        lbYouTag: "vous",
+        lbYourRank: "Votre rang",
+        lbRankBeyond: "Votre rang dépasse ce qu'on peut afficher ici — continuez à grimper !",
 
         // DIFFICULTY SCREEN
         diffScreenTitle: "CHOISIR LA DIFFICULTÉ",
@@ -3287,7 +3300,7 @@ const FOOTDLE_LANGUAGES = {
         // LEADERBOARD
         lbMenuButton: "🏆 لوحة الصدارة",
         lbTitle: "🏆 لوحة الصدارة",
-        lbSubtitle: "أفضل الفوز بأقل عدد من المحاولات — كل النتائج",
+        lbSubtitle: "أفضل نتيجة لكل لاعب — الأقل محاولات يفوز",
         lbAllTime: "كل الأوقات",
         lbWeekly: "هذا الأسبوع",
         lbLoading: "جارٍ التحميل…",
@@ -3296,6 +3309,9 @@ const FOOTDLE_LANGUAGES = {
         lbGuessSingular: "محاولة",
         lbGuessPlural: "محاولات",
         lbErrorLoad: "تعذّر تحميل لوحة الصدارة — تحقق من اتصالك.",
+        lbYouTag: "أنت",
+        lbYourRank: "ترتيبك",
+        lbRankBeyond: "ترتيبك أبعد مما يمكننا عرضه هنا — واصل التقدم!",
 
         // DIFFICULTY SCREEN
         diffScreenTitle: "اختر مستوى الصعوبة",
@@ -3484,9 +3500,9 @@ const FOOTDLE_LANGUAGES = {
         mpHostChangingSettings: "⚙️ El anfitrión está cambiando los ajustes…",
 
         // LEADERBOARD
-        lbMenuButton: "🏆 Clasificación",
-        lbTitle: "🏆 Clasificación",
-        lbSubtitle: "Mejores victorias con menos intentos — todas las puntuaciones",
+        lbMenuButton: "🏆 CLASIFICACIÓN",
+        lbTitle: "🏆 CLASIFICACIÓN",
+        lbSubtitle: "El mejor resultado de cada jugador — menos intentos gana",
         lbAllTime: "Histórico",
         lbWeekly: "Esta semana",
         lbLoading: "Cargando…",
@@ -3495,6 +3511,9 @@ const FOOTDLE_LANGUAGES = {
         lbGuessSingular: "intento",
         lbGuessPlural: "intentos",
         lbErrorLoad: "No se pudo cargar la clasificación — revisa tu conexión.",
+        lbYouTag: "tú",
+        lbYourRank: "Tu posición",
+        lbRankBeyond: "Tu posición está más allá de lo que podemos mostrar aquí — ¡sigue subiendo!",
 
         // DIFFICULTY SCREEN
         diffScreenTitle: "SELECCIONAR DIFICULTAD",
@@ -3683,9 +3702,9 @@ const FOOTDLE_LANGUAGES = {
         mpHostChangingSettings: "⚙️ L'host sta cambiando le impostazioni…",
 
         // LEADERBOARD
-        lbMenuButton: "🏆 Classifica",
-        lbTitle: "🏆 Classifica",
-        lbSubtitle: "Migliori vittorie con meno tentativi — tutti i punteggi",
+        lbMenuButton: "🏆 CLASSIFICA",
+        lbTitle: "🏆 CLASSIFICA",
+        lbSubtitle: "Il miglior punteggio di ogni giocatore — meno tentativi vince",
         lbAllTime: "Di sempre",
         lbWeekly: "Questa settimana",
         lbLoading: "Caricamento…",
@@ -3694,6 +3713,9 @@ const FOOTDLE_LANGUAGES = {
         lbGuessSingular: "tentativo",
         lbGuessPlural: "tentativi",
         lbErrorLoad: "Impossibile caricare la classifica — controlla la connessione.",
+        lbYouTag: "tu",
+        lbYourRank: "La tua posizione",
+        lbRankBeyond: "La tua posizione è oltre quello che possiamo mostrare qui — continua a scalare!",
 
         // DIFFICULTY SCREEN
         diffScreenTitle: "SCEGLI DIFFICOLTÀ",
@@ -3884,7 +3906,7 @@ const FOOTDLE_LANGUAGES = {
         // LEADERBOARD
         lbMenuButton: "🏆 ランキング",
         lbTitle: "🏆 ランキング",
-        lbSubtitle: "最少の予想回数での勝利ランキング — 全員のスコア",
+        lbSubtitle: "各プレイヤーの自己ベスト — 予想回数が少ないほど上位",
         lbAllTime: "全期間",
         lbWeekly: "今週",
         lbLoading: "読み込み中…",
@@ -3893,6 +3915,9 @@ const FOOTDLE_LANGUAGES = {
         lbGuessSingular: "回",
         lbGuessPlural: "回",
         lbErrorLoad: "ランキングを読み込めませんでした — 接続を確認してください。",
+        lbYouTag: "あなた",
+        lbYourRank: "あなたの順位",
+        lbRankBeyond: "あなたの順位はここに表示できる範囲を超えています — その調子で頑張って！",
 
         // DIFFICULTY SCREEN
         diffScreenTitle: "難易度を選択",
@@ -5674,10 +5699,19 @@ async function isNicknameTaken(nickname) {
 
 }
 
+// We fetch a much bigger batch than we display (LB_FETCH_LIMIT) so that
+// after collapsing repeat winners down to their single best run
+// (see dedupeLeaderboardEntries), we still have a full top 10 — and enough
+// data to work out the current player's own rank if they're outside it.
+const LB_FETCH_LIMIT = 500;
+
 async function fetchLeaderboardEntries(scope) {
 
     let endpoint =
-        `${SUPABASE_URL}/rest/v1/leaderboard?select=nickname,attempts,difficulty&order=attempts.asc&limit=10`;
+        `${SUPABASE_URL}/rest/v1/leaderboard` +
+        `?select=nickname,attempts,difficulty,time_seconds,created_at` +
+        `&order=attempts.asc,time_seconds.asc.nullslast,created_at.asc` +
+        `&limit=${LB_FETCH_LIMIT}`;
 
     if (scope === "weekly") {
 
@@ -5701,7 +5735,33 @@ async function fetchLeaderboardEntries(scope) {
 
 }
 
-async function recordLeaderboardEntry(attemptsUsed, gameDifficulty) {
+// Collapses a nickname's multiple wins down to their single best run
+// (fewest guesses, fastest time as a tiebreaker — the list is already
+// sorted that way, so the first row we see per nickname is their best).
+// Also counts up how many wins that nickname has in this batch, so we
+// can show a small "x N wins" badge.
+function dedupeLeaderboardEntries(entries) {
+
+    const seen = new Map();
+
+    for (const entry of entries) {
+
+        const key = entry.nickname.trim().toLowerCase();
+
+        if (seen.has(key)) {
+            seen.get(key).wins += 1;
+            continue;
+        }
+
+        seen.set(key, { ...entry, wins: 1 });
+
+    }
+
+    return [...seen.values()];
+
+}
+
+async function recordLeaderboardEntry(attemptsUsed, gameDifficulty, timeSeconds) {
 
     const nickname = getNickname() || "Anonymous";
 
@@ -5717,7 +5777,8 @@ async function recordLeaderboardEntry(attemptsUsed, gameDifficulty) {
             body: JSON.stringify({
                 nickname,
                 attempts: attemptsUsed,
-                difficulty: gameDifficulty
+                difficulty: gameDifficulty,
+                time_seconds: timeSeconds ?? null
             })
         });
 
@@ -5814,6 +5875,27 @@ async function showLeaderboard() {
 
 }
 
+function renderLeaderboardRow(entry, rank, myNickname) {
+
+    const medals = ["🥇", "🥈", "🥉"];
+    const isMe = myNickname && entry.nickname.trim().toLowerCase() === myNickname.trim().toLowerCase();
+
+    return `
+        <div class="leaderboard-row ${isMe ? "me" : ""} ${rank <= 3 ? "rank-" + rank : ""}">
+            <span class="leaderboard-rank">${rank <= 3 ? medals[rank - 1] : rank}</span>
+            <span class="leaderboard-name">
+                ${escapeHtml(entry.nickname)}${isMe ? ` <span class="leaderboard-you">· ${t("lbYouTag")}</span>` : ""}
+            </span>
+            <span class="leaderboard-difficulty">${escapeHtml(entry.difficulty)}</span>
+            <span class="leaderboard-meta">
+                ${entry.wins > 1 ? `<span class="leaderboard-wins">🏆×${entry.wins}</span>` : ""}
+                <span class="leaderboard-attempts">${entry.attempts} ${entry.attempts === 1 ? t("lbGuessSingular") : t("lbGuessPlural")}</span>
+            </span>
+        </div>
+    `;
+
+}
+
 async function loadLeaderboardList(overlay) {
 
     const list = overlay.querySelector("#leaderboardList");
@@ -5823,9 +5905,9 @@ async function loadLeaderboardList(overlay) {
 
     try {
 
-        const entries = await fetchLeaderboardEntries(leaderboardScope);
+        const rawEntries = await fetchLeaderboardEntries(leaderboardScope);
 
-        if (entries.length === 0) {
+        if (rawEntries.length === 0) {
 
             const emptyMsg =
                 leaderboardScope === "weekly"
@@ -5834,20 +5916,47 @@ async function loadLeaderboardList(overlay) {
 
             list.innerHTML = `<div class="leaderboard-empty">${emptyMsg}</div>`;
 
-        } else {
-
-            const medals = ["🥇", "🥈", "🥉"];
-
-            list.innerHTML = entries.map((entry, i) => `
-                <div class="leaderboard-row ${entry.nickname === myNickname ? "me" : ""} ${i < 3 ? "rank-" + (i + 1) : ""}">
-                    <span class="leaderboard-rank">${i < 3 ? medals[i] : i + 1}</span>
-                    <span class="leaderboard-name">${escapeHtml(entry.nickname)}</span>
-                    <span class="leaderboard-difficulty">${escapeHtml(entry.difficulty)}</span>
-                    <span class="leaderboard-attempts">${entry.attempts} ${entry.attempts === 1 ? t("lbGuessSingular") : t("lbGuessPlural")}</span>
-                </div>
-            `).join("");
+            return;
 
         }
+
+        // One row per player (their personal best run), ranked by fewest
+        // guesses, then fastest time as a tiebreaker — see fetch's `order`.
+        const ranked = dedupeLeaderboardEntries(rawEntries);
+
+        const top = ranked.slice(0, 10);
+
+        let html = top
+            .map((entry, i) => renderLeaderboardRow(entry, i + 1, myNickname))
+            .join("");
+
+        // If the player has a nickname and a best run, but it didn't make
+        // the top 10 shown above, pin their own rank below the list so
+        // they can still see how they're doing.
+        if (myNickname) {
+
+            const myIndex = ranked.findIndex(
+                entry => entry.nickname.trim().toLowerCase() === myNickname.trim().toLowerCase()
+            );
+
+            if (myIndex >= 10) {
+
+                html += `
+                    <div class="leaderboard-divider"><span>${t("lbYourRank")}</span></div>
+                    ${renderLeaderboardRow(ranked[myIndex], myIndex + 1, myNickname)}
+                `;
+
+            } else if (myIndex === -1 && rawEntries.length >= LB_FETCH_LIMIT) {
+
+                // We hit the fetch cap without finding this player — their
+                // best run exists, just further down than we can measure.
+                html += `<div class="leaderboard-divider"><span>${t("lbRankBeyond")}</span></div>`;
+
+            }
+
+        }
+
+        list.innerHTML = html;
 
     } catch (e) {
 
@@ -6024,10 +6133,32 @@ leaderboardStyle.textContent = `
         text-overflow: ellipsis;
     }
 
+    .leaderboard-you {
+        font-weight: 600;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: #3d8bfd;
+    }
+
     .leaderboard-difficulty {
         font-size: 11px;
         text-transform: capitalize;
         color: rgba(255, 255, 255, 0.5);
+        flex-shrink: 0;
+    }
+
+    .leaderboard-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+    .leaderboard-wins {
+        font-size: 11px;
+        font-weight: 700;
+        color: rgba(255, 215, 0, 0.85);
         flex-shrink: 0;
     }
 
@@ -6036,6 +6167,28 @@ leaderboardStyle.textContent = `
         font-weight: 700;
         color: #3d8bfd;
         flex-shrink: 0;
+    }
+
+    .leaderboard-divider {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 10px 0 2px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: rgba(255, 255, 255, 0.4);
+        text-align: center;
+        justify-content: center;
+    }
+
+    .leaderboard-divider::before,
+    .leaderboard-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.12);
     }
 
     @media (max-width: 500px) {
